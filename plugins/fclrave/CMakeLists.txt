@@ -73,7 +73,12 @@ if( FCL_FOUND )
       fclrave.cpp
       fclcollision.cpp
       fclspace.cpp
-      fclcollision.h fclstatistics.h fclspace.h plugindefs.h
+      fclmanagercache.cpp
+      fclcollision.h
+      fclstatistics.h
+      fclspace.h
+      fclmanagercache.h
+      plugindefs.h
     )
 
     add_library(fclrave SHARED ${fclrave_sources})
