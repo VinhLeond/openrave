@@ -144,9 +144,6 @@ public:
         return _broadPhaseCollisionManagerAlgorithm;
     }
 
-    // TODO : This is becoming really stupid, I should just add optional additional data for DynamicAABBTree
-    BroadPhaseCollisionManagerPtr _CreateManagerFromBroadphaseAlgorithm(std::string const &algorithm);
-
     /// Sets the bounding volume hierarchy representation which can be one of
     /// AABB, OBB, RSS, OBBRSS, kDOP16, kDOP18, kDOP24, kIOS
     /// e.g. "SetBVHRepresentation OBB"
@@ -307,6 +304,9 @@ private:
     bool _bIsSelfCollisionChecker; // Currently not used
     bool _bParentlessCollisionObject; ///< if set to true, the last collision command ran into colliding with an unknown object
 };
+
+// TODO : This is becoming really stupid, I should just add optional additional data for DynamicAABBTree
+BroadPhaseCollisionManagerPtr CreateManagerFromBroadphaseAlgorithm(std::string const &algorithm);
 
 } // fclrave
 

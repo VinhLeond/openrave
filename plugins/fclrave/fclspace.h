@@ -279,12 +279,9 @@ public:
         return _penv->GetId();
     }
 private:
-    static void _AddGeomInfoToBVHSubmodel(fcl::BVHModel<fcl::OBB>& model, KinBody::GeometryInfo const &info);
-
-    static TransformCollisionPair _CreateTransformCollisionPairFromOBB(fcl::OBB const &bv);
 
     // what about the tests on non-zero size (eg. box extents) ?
-    static CollisionGeometryPtr _CreateFCLGeomFromGeometryInfo(const MeshFactory &mesh_factory, const KinBody::GeometryInfo &info);
+    CollisionGeometryPtr _CreateFCLGeomFromGeometryInfo(const KinBody::GeometryInfo &info);
 
     /// \brief pass in info.GetBody() as a reference to avoid dereferencing the weak pointer in FCLKinBodyInfo
     void _Synchronize(FCLKinBodyInfo& info, const KinBody& body);

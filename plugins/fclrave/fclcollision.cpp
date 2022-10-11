@@ -4,6 +4,51 @@
 
 namespace fclrave {
 
+boost::shared_ptr<fcl::BroadPhaseCollisionManager> CreateManagerFromBroadphaseAlgorithm(std::string const &algorithm)
+{
+    if(algorithm == "Naive") {
+        return boost::make_shared<fcl::NaiveCollisionManager>();
+    } else if(algorithm == "SaP") {
+        return boost::make_shared<fcl::SaPCollisionManager>();
+    } else if(algorithm == "SSaP") {
+        return boost::make_shared<fcl::SSaPCollisionManager>();
+    } else if(algorithm == "SpatialHashing") {
+        throw OPENRAVE_EXCEPTION_FORMAT0("No spatial data provided, spatial hashing needs to be set up  with SetSpatialHashingBroadPhaseAlgorithm", OpenRAVE::ORE_InvalidArguments);
+    } else if(algorithm == "IntervalTree") {
+        return boost::make_shared<fcl::IntervalTreeCollisionManager>();
+    } else if(algorithm == "DynamicAABBTree") {
+        return boost::make_shared<fcl::DynamicAABBTreeCollisionManager>();
+    } else if(algorithm == "DynamicAABBTree1") {
+        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager>();
+        pmanager->tree_init_level = 1;
+        return pmanager;
+    } else if(algorithm == "DynamicAABBTree2") {
+        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager>();
+        pmanager->tree_init_level = 2;
+        return pmanager;
+    } else if(algorithm == "DynamicAABBTree3") {
+        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager>();
+        pmanager->tree_init_level = 3;
+        return pmanager;
+    } else if(algorithm == "DynamicAABBTree_Array") {
+        return boost::make_shared<fcl::DynamicAABBTreeCollisionManager_Array>();
+    } else if(algorithm == "DynamicAABBTree1_Array") {
+        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager_Array> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager_Array>();
+        pmanager->tree_init_level = 1;
+        return pmanager;
+    } else if(algorithm == "DynamicAABBTree2_Array") {
+        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager_Array> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager_Array>();
+        pmanager->tree_init_level = 2;
+        return pmanager;
+    } else if(algorithm == "DynamicAABBTree3_Array") {
+        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager_Array> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager_Array>();
+        pmanager->tree_init_level = 3;
+        return pmanager;
+    } else {
+        throw OPENRAVE_EXCEPTION_FORMAT("Unknown broad-phase algorithm '%s'.", algorithm, OpenRAVE::ORE_InvalidArguments);
+    }
+}
+
 FCLCollisionChecker::CollisionCallbackData::CollisionCallbackData(boost::shared_ptr<FCLCollisionChecker> pchecker, CollisionReportPtr report, const std::vector<KinBodyConstPtr>& vbodyexcluded, const std::vector<LinkConstPtr>& vlinkexcluded)
     : _pchecker(pchecker)
     , _report(report)
@@ -15,7 +60,7 @@ FCLCollisionChecker::CollisionCallbackData::CollisionCallbackData(boost::shared_
 {
     _bHasCallbacks = _pchecker->GetEnv()->HasRegisteredCollisionCallbacks();
     if( _bHasCallbacks && !_report ) {
-        _report.reset(new CollisionReport());
+        _report = boost::make_shared<CollisionReport>();
     }
 
     // TODO : What happens if we have CO_AllGeometryContacts set and not CO_Contacts ?
@@ -50,7 +95,7 @@ FCLCollisionChecker::FCLCollisionChecker(OpenRAVE::EnvironmentBasePtr penv, std:
 {
     _bParentlessCollisionObject = false;
     _userdatakey = std::string("fclcollision") + boost::lexical_cast<std::string>(this);
-    _fclspace.reset(new FCLSpace(penv, _userdatakey));
+    _fclspace = boost::make_shared<FCLSpace>(penv, _userdatakey);
     _options = 0;
     // TODO : Should we put a more reasonable arbitrary value ?
     _numMaxContacts = std::numeric_limits<int>::max();
@@ -151,51 +196,6 @@ void FCLCollisionChecker::_SetBroadphaseAlgorithm(const std::string &algorithm)
     // clear all the current cached managers
     _bodymanagers.clear();
     _envmanagers.clear();
-}
-
-BroadPhaseCollisionManagerPtr FCLCollisionChecker::_CreateManagerFromBroadphaseAlgorithm(std::string const &algorithm)
-{
-    if(algorithm == "Naive") {
-        return boost::make_shared<fcl::NaiveCollisionManager>();
-    } else if(algorithm == "SaP") {
-        return boost::make_shared<fcl::SaPCollisionManager>();
-    } else if(algorithm == "SSaP") {
-        return boost::make_shared<fcl::SSaPCollisionManager>();
-    } else if(algorithm == "SpatialHashing") {
-        throw OPENRAVE_EXCEPTION_FORMAT0("No spatial data provided, spatial hashing needs to be set up  with SetSpatialHashingBroadPhaseAlgorithm", OpenRAVE::ORE_InvalidArguments);
-    } else if(algorithm == "IntervalTree") {
-        return boost::make_shared<fcl::IntervalTreeCollisionManager>();
-    } else if(algorithm == "DynamicAABBTree") {
-        return boost::make_shared<fcl::DynamicAABBTreeCollisionManager>();
-    } else if(algorithm == "DynamicAABBTree1") {
-        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager>();
-        pmanager->tree_init_level = 1;
-        return pmanager;
-    } else if(algorithm == "DynamicAABBTree2") {
-        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager>();
-        pmanager->tree_init_level = 2;
-        return pmanager;
-    } else if(algorithm == "DynamicAABBTree3") {
-        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager>();
-        pmanager->tree_init_level = 3;
-        return pmanager;
-    } else if(algorithm == "DynamicAABBTree_Array") {
-        return boost::make_shared<fcl::DynamicAABBTreeCollisionManager_Array>();
-    } else if(algorithm == "DynamicAABBTree1_Array") {
-        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager_Array> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager_Array>();
-        pmanager->tree_init_level = 1;
-        return pmanager;
-    } else if(algorithm == "DynamicAABBTree2_Array") {
-        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager_Array> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager_Array>();
-        pmanager->tree_init_level = 2;
-        return pmanager;
-    } else if(algorithm == "DynamicAABBTree3_Array") {
-        boost::shared_ptr<fcl::DynamicAABBTreeCollisionManager_Array> pmanager = boost::make_shared<fcl::DynamicAABBTreeCollisionManager_Array>();
-        pmanager->tree_init_level = 3;
-        return pmanager;
-    } else {
-        throw OPENRAVE_EXCEPTION_FORMAT("Unknown broad-phase algorithm '%s'.", algorithm, OpenRAVE::ORE_InvalidArguments);
-    }
 }
 
 bool FCLCollisionChecker::_SetBVHRepresentation(ostream& sout, istream& sinput)
@@ -1168,7 +1168,7 @@ std::pair<FCLSpace::FCLKinBodyInfo::FCLGeometryInfo*, GeometryConstPtr> FCLColli
 }
 
 BroadPhaseCollisionManagerPtr FCLCollisionChecker::_CreateManager() {
-    return _CreateManagerFromBroadphaseAlgorithm(_broadPhaseCollisionManagerAlgorithm);
+    return CreateManagerFromBroadphaseAlgorithm(_broadPhaseCollisionManagerAlgorithm);
 }
 
 FCLCollisionManagerInstance& FCLCollisionChecker::_GetBodyManager(KinBodyConstPtr pbody, bool bactiveDOFs)

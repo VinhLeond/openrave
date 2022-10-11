@@ -84,7 +84,7 @@ FCLSpace::FCLKinBodyInfoPtr FCLSpace::InitKinBody(KinBodyConstPtr pbody, FCLKinB
                     throw OpenRAVE::OpenRAVEException(str(boost::format("Failed to access geometry info %d for link %s:%s with geometrygroup %s")%igeominfo%plink->GetParent()->GetName()%plink->GetName()%pinfo->_geometrygroup), OpenRAVE::ORE_InvalidState);
                 }
                 const KinBody::GeometryInfo& geominfo = *pgeominfo;
-                const CollisionGeometryPtr pfclgeom = _CreateFCLGeomFromGeometryInfo(_meshFactory, geominfo);
+                const CollisionGeometryPtr pfclgeom = _CreateFCLGeomFromGeometryInfo(geominfo);
 
                 if( !pfclgeom ) {
                     continue;
@@ -110,7 +110,7 @@ FCLSpace::FCLKinBodyInfoPtr FCLSpace::InitKinBody(KinBodyConstPtr pbody, FCLKinB
             FOREACH(itgeom, vgeometries) {
                 const KinBody::GeometryPtr& pgeom = *itgeom;
                 const KinBody::GeometryInfo& geominfo = pgeom->GetInfo();
-                const CollisionGeometryPtr pfclgeom = _CreateFCLGeomFromGeometryInfo(_meshFactory, geominfo);
+                const CollisionGeometryPtr pfclgeom = _CreateFCLGeomFromGeometryInfo(geominfo);
 
                 if( !pfclgeom ) {
                     continue;
@@ -309,8 +309,7 @@ void FCLSpace::SetBVHRepresentation(std::string const &type)
         if (!pbody) {
             continue;
         }
-        const KinBody& body = *pbody;
-        FCLKinBodyInfoPtr& pinfo = GetInfo(body);
+        FCLKinBodyInfoPtr& pinfo = GetInfo(*pbody);
         pinfo->nGeometryUpdateStamp++;
         InitKinBody(pbody, pinfo);
     }
@@ -419,43 +418,7 @@ void FCLSpace::RemoveUserData(KinBodyConstPtr pbody) {
     }
 }
 
-void FCLSpace::_AddGeomInfoToBVHSubmodel(fcl::BVHModel<fcl::OBB>& model, KinBody::GeometryInfo const &info)
-{
-    const OpenRAVE::TriMesh& mesh = info._meshcollision;
-    if (mesh.vertices.empty() || mesh.indices.empty()) {
-        return;
-    }
-
-    OPENRAVE_ASSERT_OP(mesh.indices.size() % 3, ==, 0);
-    size_t const num_points = mesh.vertices.size();
-    size_t const num_triangles = mesh.indices.size() / 3;
-
-    std::vector<fcl::Vec3f> fcl_points(num_points);
-    for (size_t ipoint = 0; ipoint < num_points; ++ipoint) {
-        Vector v = info.GetTransform()*mesh.vertices[ipoint];
-        fcl_points[ipoint] = fcl::Vec3f(v.x, v.y, v.z);
-    }
-
-    std::vector<fcl::Triangle> fcl_triangles(num_triangles);
-    for (size_t itri = 0; itri < num_triangles; ++itri) {
-        int const *const tri_indices = &mesh.indices[3 * itri];
-        fcl_triangles[itri] = fcl::Triangle(tri_indices[0], tri_indices[1], tri_indices[2]);
-    }
-    model.addSubModel(fcl_points, fcl_triangles);
-}
-
-TransformCollisionPair FCLSpace::_CreateTransformCollisionPairFromOBB(fcl::OBB const &bv) {
-    CollisionGeometryPtr pbvGeom = make_shared<fcl::Box>(bv.extent[0]*2.0f, bv.extent[1]*2.0f, bv.extent[2]*2.0f);
-    CollisionObjectPtr pbvColl = boost::make_shared<fcl::CollisionObject>(pbvGeom);
-    fcl::Quaternion3f fclBvRot;
-    fclBvRot.fromAxes(bv.axis);
-    Vector bvRotation = ConvertQuaternionFromFCL(fclBvRot);
-    Vector bvTranslation = ConvertVectorFromFCL(bv.center());
-
-    return std::make_pair(Transform(bvRotation, bvTranslation), pbvColl);
-}
-
-CollisionGeometryPtr FCLSpace::_CreateFCLGeomFromGeometryInfo(const MeshFactory &mesh_factory, const KinBody::GeometryInfo &info)
+CollisionGeometryPtr FCLSpace::_CreateFCLGeomFromGeometryInfo(const KinBody::GeometryInfo &info)
 {
     switch(info._type) {
 
@@ -464,13 +427,13 @@ CollisionGeometryPtr FCLSpace::_CreateFCLGeomFromGeometryInfo(const MeshFactory 
 
     case OpenRAVE::GT_CalibrationBoard:
     case OpenRAVE::GT_Box:
-        return make_shared<fcl::Box>(info._vGeomData.x*2.0f,info._vGeomData.y*2.0f,info._vGeomData.z*2.0f);
+        return std::make_shared<fcl::Box>(info._vGeomData.x*2.0f,info._vGeomData.y*2.0f,info._vGeomData.z*2.0f);
 
     case OpenRAVE::GT_Sphere:
-        return make_shared<fcl::Sphere>(info._vGeomData.x);
+        return std::make_shared<fcl::Sphere>(info._vGeomData.x);
 
     case OpenRAVE::GT_Cylinder:
-        return make_shared<fcl::Cylinder>(info._vGeomData.x, info._vGeomData.y);
+        return std::make_shared<fcl::Cylinder>(info._vGeomData.x, info._vGeomData.y);
 
     case OpenRAVE::GT_Container:
     case OpenRAVE::GT_TriMesh:
@@ -497,7 +460,7 @@ CollisionGeometryPtr FCLSpace::_CreateFCLGeomFromGeometryInfo(const MeshFactory 
             fcl_triangles[itri] = fcl::Triangle(tri_indices[0], tri_indices[1], tri_indices[2]);
         }
 
-        return mesh_factory(fcl_points, fcl_triangles);
+        return _meshFactory(fcl_points, fcl_triangles);
     }
 
     default:
