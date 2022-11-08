@@ -13,6 +13,7 @@ message(STATUS "Default OpenRAVE plugin path for unit tests is ${OPENRAVE_PLUGIN
 
 set(test_sources
     main.cpp
+    test_benchmarks.cpp
     test_interface.cpp
     test_collision.cpp
 )
