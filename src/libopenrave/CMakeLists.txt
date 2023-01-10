@@ -50,7 +50,6 @@ link_directories(${OPENRAVE_LINK_DIRS} ${FPARSER_LIBRARY_DIRS})
 
 include_directories(${FPARSER_INCLUDE_DIRS})
 add_library(libopenrave SHARED ${openrave_lib_SOURCES})
-add_dependencies(libopenrave interfacehashes_target)
 if( CRLIBM_FOUND )
   add_dependencies(libopenrave check_libm_accuracy-native) # forces check to be run before libopenrave is compile
 endif()
@@ -97,7 +96,6 @@ if( OPT_STATIC )
                                            LINK_FLAGS "${LIBOPENRAVE_LINK_FLAGS} ${FPARSER_LINK_FLAGS}")
 
   target_link_libraries(libopenrave_static PRIVATE boost_assertion_failed crlibm openrave-md5 PUBLIC ${openrave_libraries} ${FPARSER_LIBRARIES})
-  add_dependencies(libopenrave_static interfacehashes_target)
   if( CRLIBM_FOUND )
     add_dependencies(libopenrave_static check_libm_accuracy-native) # forces check to be run before libopenrave is compilde
   endif()

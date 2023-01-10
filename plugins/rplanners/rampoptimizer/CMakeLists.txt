@@ -4,8 +4,6 @@ set_target_properties(rampoptimizer PROPERTIES COMPILE_FLAGS "${PLUGIN_COMPILE_F
 
 install(TARGETS rampoptimizer DESTINATION ${OPENRAVE_PLUGINS_INSTALL_DIR} COMPONENT ${PLUGINS_BASE})
 
-add_dependencies(rampoptimizer interfacehashes_target)		
-
 # python bindings
 if( OPT_PYTHON )
   # link

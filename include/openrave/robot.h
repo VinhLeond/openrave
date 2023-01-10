@@ -1395,12 +1395,6 @@ protected:
     ConfigurationSpecification _activespec;
 
 private:
-    virtual const char* GetHash() const {
-        return OPENRAVE_ROBOT_HASH;
-    }
-    virtual const char* GetKinBodyHash() const {
-        return OPENRAVE_KINBODY_HASH;
-    }
     mutable std::string __hashrobotstructure;
     mutable std::vector<dReal> _vTempRobotJoints;
 

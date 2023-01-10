@@ -3482,9 +3482,6 @@ protected:
 private:
     mutable std::string __hashkinematics;
     mutable std::vector<dReal> _vTempJoints;
-    virtual const char* GetHash() const {
-        return OPENRAVE_KINBODY_HASH;
-    }
 
 #ifdef RAVE_PRIVATE
 #ifdef _MSC_VER

@@ -8,8 +8,6 @@ set_target_properties(piecewisepolynomials PROPERTIES COMPILE_FLAGS "${PLUGIN_CO
 
 install(TARGETS piecewisepolynomials DESTINATION ${OPENRAVE_PLUGINS_INSTALL_DIR} COMPONENT ${PLUGINS_BASE})
 
-add_dependencies(piecewisepolynomials interfacehashes_target)		
-
 # python bindings
 if( OPT_PYTHON )
   # link
