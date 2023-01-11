@@ -368,6 +368,8 @@ if( OPT_ACCURATEMATH AND NOT MSVC AND NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES aarc
   set(CRLIBM_FOUND 1)
   set(CRLIBM_LIBRARY crlibm)
 else()
+  # Add empty library so target_link_libraries can reference it without errors when OPT_ACCURATEMATH is OFF.
+  add_library(crlibm INTERFACE)
   set(CRLIBM_FOUND 0)
 endif()
 
