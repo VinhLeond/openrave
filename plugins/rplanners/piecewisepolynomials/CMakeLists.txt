@@ -6,8 +6,6 @@ add_library(piecewisepolynomials STATIC polynomialcommon.h polynomialtrajectory.
 target_link_libraries(piecewisepolynomials PRIVATE boost_assertion_failed PUBLIC libopenrave)
 set_target_properties(piecewisepolynomials PROPERTIES COMPILE_FLAGS "${PLUGIN_COMPILE_FLAGS}" LINK_FLAGS "${PLUGIN_LINK_FLAGS}")
 
-install(TARGETS piecewisepolynomials DESTINATION ${OPENRAVE_PLUGINS_INSTALL_DIR} COMPONENT ${PLUGINS_BASE})
-
 # python bindings
 if( OPT_PYTHON )
   # link
