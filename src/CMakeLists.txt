@@ -3,7 +3,7 @@ set (openrave_SOURCES openrave.cpp)
 
 include_directories(${OPENRAVE_INCLUDE_LOCAL_DIRS})
 
-set(openrave_libraries ${LIBXML2_LIBRARIES} ${Boost_DATE_TIME_LIBRARY} ${Boost_THREAD_LIBRARY})
+set(openrave_libraries ${Boost_DATE_TIME_LIBRARY} ${Boost_THREAD_LIBRARY})
 if( Boost_FILESYSTEM_FOUND AND Boost_SYSTEM_FOUND )
   set(openrave_libraries ${openrave_libraries} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 endif()

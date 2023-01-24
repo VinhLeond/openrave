@@ -72,7 +72,7 @@ set_target_properties(libopenrave-core PROPERTIES OUTPUT_NAME openrave${OPENRAVE
                                   COMPILE_FLAGS "${LIBOPENRAVE_COMPILE_FLAGS} -DOPENRAVE_CORE_DLL_EXPORTS -DOPENRAVE_CORE_DLL"
                                   LINK_FLAGS "${LIBOPENRAVE_LINK_FLAGS}")
 
-target_link_libraries(libopenrave-core PRIVATE boost_assertion_failed ivcon pcrecpp PUBLIC LibXml2::LibXml2 libopenrave ${OPENRAVE_CORE_LIBRARIES})
+target_link_libraries(libopenrave-core PRIVATE boost_assertion_failed ivcon pcrecpp PUBLIC libopenrave ${OPENRAVE_CORE_LIBRARIES})
 install(TARGETS libopenrave-core
   EXPORT openrave-targets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
