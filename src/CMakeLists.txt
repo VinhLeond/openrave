@@ -98,7 +98,7 @@ endif()
 
 target_link_libraries(openrave PRIVATE boost_assertion_failed PUBLIC ${Boost_DATE_TIME_LIBRARY} ${Boost_THREAD_LIBRARY} ${SOCKET_LIBS} ${openrave_libraries} libopenrave libopenrave-core)
 
-install(TARGETS openrave EXPORT openrave-targets RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS openrave RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 InstallSymlink(${CMAKE_INSTALL_PREFIX}/bin/openrave${OPENRAVE_BIN_SUFFIX} ${CMAKE_INSTALL_PREFIX}/bin/openrave)
 
 # always extract the models since we don't know when models.tgz has been changed
