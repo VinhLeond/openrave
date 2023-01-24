@@ -14,9 +14,9 @@
 
 @PACKAGE_INIT@
 
-set_and_check(OpenRAVE_INCLUDE_DIR @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@/@OPENRAVE_INCLUDE_INSTALL_DIR@)
-set_and_check(OpenRAVE_RAPIDJSON_INCLUDE_DIR "@RAPIDJSON_INCLUDES@")
-set_and_check(OpenRAVE_PYTHON_DIR "@CMAKE_INSTALL_PREFIX@/@OPENRAVEPY_INSTALL_DIR@")
+#set_and_check(OpenRAVE_INCLUDE_DIR @PACKAGE_PREFIX_DIR@/include/@OPENRAVE_INCLUDE_INSTALL_DIR@)
+#set_and_check(OpenRAVE_RAPIDJSON_INCLUDE_DIR "@RAPIDJSON_INCLUDES@")
+#set_and_check(OpenRAVE_PYTHON_DIR "@PACKAGE_PREFIX_DIR@/@OPENRAVEPY_INSTALL_DIR@")
 
 set(OpenRAVE_INCLUDE_DIRS ${OpenRAVE_INCLUDE_DIR} ${OpenRAVE_RAPIDJSON_INCLUDE_DIR})
 set(OpenRAVE_LIBRARIES libopenrave)
@@ -37,7 +37,7 @@ if (${OpenRAVE_PYTHON})
     # Backward compatibility shim. Remove this line once we finally migrate to modern CMake.
     # Ideally we should be linking against the target Python::Development to gain access to headers, instead of doing this.
     set(OpenRAVE_PYTHON_INCLUDE_DIRS ${Python_INCLUDE_DIRS} CACHE STRING "This is for backward compatibility with deprecated CMake declarations." FORCE)
-    set(OpenRAVE_PYTHON_DIR @CMAKE_INSTALL_PREFIX@/@OPENRAVEPY_VER_INSTALL_DIR@)
+    set(OpenRAVE_PYTHON_DIR @PACKAGE_PREFIX_DIR@/@OPENRAVEPY_VER_INSTALL_DIR@)
 
     if (${OpenRAVE_USE_PYBIND11_PYTHON_BINDINGS})
         find_package(pybind11 REQUIRED)
