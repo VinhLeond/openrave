@@ -10,7 +10,6 @@ if( libpcrecpp_FOUND )
   # pcre for url parsing
   set(LIBOPENRAVE_COMPILE_FLAGS "${LIBOPENRAVE_COMPILE_FLAGS} ${libpcrecpp_CFLAGS_OTHER}")
   set(LIBOPENRAVE_LINK_FLAGS "${LIBOPENRAVE_LINK_FLAGS} ${libpcrecpp_LDFLAGS_OTHER}")
-  #set(OPENRAVE_CORE_LIBRARIES ${OPENRAVE_CORE_LIBRARIES} ${libpcrecpp_LIBRARIES})
   include_directories(${libpcrecpp_INCLUDE_DIRS})
   set(OPENRAVE_LINK_DIRS ${OPENRAVE_LINK_DIRS} ${libpcrecpp_LIBRARY_DIRS})
   add_definitions(-DHAVE_PCRECPP)
@@ -61,12 +60,11 @@ endif()
 
 link_directories(${OPENRAVE_LINK_DIRS})
 
-add_library(libopenrave-core SHARED ${openrave_core_SOURCES})
-
 if( COLLADA_DOM_FOUND )
   set(OPENRAVE_CORE_LIBRARIES ${OPENRAVE_CORE_LIBRARIES} ${COLLADA_DOM_LIBRARIES})
 endif()
 
+add_library(libopenrave-core SHARED ${openrave_core_SOURCES})
 set_target_properties(libopenrave-core PROPERTIES OUTPUT_NAME openrave${OPENRAVE_LIBRARY_SUFFIX}-core
                                   SOVERSION 0 # always have it 0 since we're including the soversion as part of the library name
                                   VERSION ${OPENRAVE_VERSION}
@@ -74,7 +72,7 @@ set_target_properties(libopenrave-core PROPERTIES OUTPUT_NAME openrave${OPENRAVE
                                   COMPILE_FLAGS "${LIBOPENRAVE_COMPILE_FLAGS} -DOPENRAVE_CORE_DLL_EXPORTS -DOPENRAVE_CORE_DLL"
                                   LINK_FLAGS "${LIBOPENRAVE_LINK_FLAGS}")
 
-target_link_libraries(libopenrave-core PRIVATE boost_assertion_failed ivcon pcrecpp PUBLIC libopenrave ${OPENRAVE_CORE_LIBRARIES})
+target_link_libraries(libopenrave-core PRIVATE boost_assertion_failed ivcon pcrecpp PUBLIC LibXml2::LibXml2 libopenrave ${OPENRAVE_CORE_LIBRARIES})
 install(TARGETS libopenrave-core
   EXPORT openrave-targets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

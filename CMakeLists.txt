@@ -422,26 +422,10 @@ if( msgpack_FOUND )
 endif()
 endif()
 
-find_package(LibXml2)
-
-if( LIBXML2_FOUND )
-  include_directories(${LIBXML2_INCLUDE_DIR})
-  add_definitions(${LIBXML2_DEFINITIONS})
-  message(STATUS "libxml2 found")
-else()
-  if( MSVC )
-    set(LIBXML2_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/msvc_libxml2/lib/libxml2-${MSVC_PREFIX}-mt.lib)
-    set(LIBXML2_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/msvc_libxml2/include)
-    set(LIBXML2_DEFINITIONS)
-    set(LIBXML2_FOUND 1)
-    include_directories(${LIBXML2_INCLUDE_DIR})
-    # have to copy the DLLs, but not the other stuff in the lib dir
-    file(GLOB libxml_dlls "${CMAKE_CURRENT_SOURCE_DIR}/msvc_libxml2/lib/*-${MSVC_PREFIX}-*.dll")
-    install(FILES ${libxml_dlls} DESTINATION bin COMPONENT ${COMPONENT_PREFIX}base)
-  else()
-    message(FATAL_ERROR "Could not find libxml2")
-  endif()
-endif()
+find_package(LibXml2 REQUIRED)
+include_directories(${LIBXML2_INCLUDE_DIR})
+add_definitions(${LIBXML2_DEFINITIONS})
+message(STATUS "libxml2 found")
 
 # for qtcoin plugin.
 # it is necessary to check here since we would like the qt version stored in the openrave-config file
