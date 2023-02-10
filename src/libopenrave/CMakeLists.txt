@@ -65,7 +65,7 @@ set_target_properties(libopenrave PROPERTIES OUTPUT_NAME openrave${OPENRAVE_LIBR
                                   COMPILE_FLAGS "${LIBOPENRAVE_COMPILE_FLAGS} ${FPARSER_CXX_FLAGS} -DOPENRAVE_DLL_EXPORTS -DOPENRAVE_DLL"
                                   LINK_FLAGS "${LIBOPENRAVE_LINK_FLAGS} ${FPARSER_LINK_FLAGS}")
 target_compile_definitions(libopenrave PRIVATE "OPENRAVE_STATIC_PLUGINS=${OPENRAVE_STATIC_PLUGINS}")
-target_link_libraries(libopenrave PRIVATE boost_assertion_failed static_plugins PUBLIC Boost::filesystem ${openrave_libraries} ${FPARSER_LIBRARIES} ${Intl_LIBRARIES} ${CMAKE_DL_LIBS})
+target_link_libraries(libopenrave PRIVATE boost_assertion_failed static_plugins PUBLIC ${openrave_libraries} ${FPARSER_LIBRARIES} ${Intl_LIBRARIES} ${CMAKE_DL_LIBS})
 if( MSVC )
   install(TARGETS libopenrave EXPORT openrave-targets RUNTIME DESTINATION bin COMPONENT ${COMPONENT_PREFIX}base LIBRARY DESTINATION bin COMPONENT ${COMPONENT_PREFIX}base ARCHIVE DESTINATION lib${LIB_SUFFIX} COMPONENT ${COMPONENT_PREFIX}base)
 else()
